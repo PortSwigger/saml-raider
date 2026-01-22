@@ -39,8 +39,6 @@ import java.security.cert.CertificateException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 import javax.xml.crypto.MarshalException;
 import javax.xml.crypto.dsig.XMLSignatureException;
 import javax.xml.parsers.ParserConfigurationException;
@@ -468,7 +466,7 @@ public class SamlTabController implements ExtensionProvidedHttpRequestEditor, Ob
             fileOutputStream.flush();
             fileOutputStream.close();
 
-            URI uri = new URL("file://" + file.getAbsolutePath()).toURI();
+            URI uri = file.toURI();
 
             Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
             if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
@@ -485,8 +483,6 @@ public class SamlTabController implements ExtensionProvidedHttpRequestEditor, Ob
         } catch (DOMException e) {
             setInfoMessageText(XML_NOT_SUITABLE_FOR_XSW);
         } catch (MalformedURLException e) {
-            BurpExtender.api.logging().logToError(e);
-        } catch (URISyntaxException e) {
             BurpExtender.api.logging().logToError(e);
         } catch (IOException e) {
             setInfoMessageText(NO_DIFF_TEMP_FILE);
@@ -637,7 +633,7 @@ public class SamlTabController implements ExtensionProvidedHttpRequestEditor, Ob
     }
 
     @Override
-    public void update(Observable arg0, Object arg1) {
+    public void update() {
         updateCertificateList();
     }
 
@@ -646,6 +642,7 @@ public class SamlTabController implements ExtensionProvidedHttpRequestEditor, Ob
     }
 
     public void setEditorContents(String text) {
+        this.isEdited = true;
         this.textArea.setContents(ByteArray.byteArray(text));
     }
 }
